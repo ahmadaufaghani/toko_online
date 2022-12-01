@@ -62,18 +62,18 @@ class AuthController extends Controller
 
         $user = User::where('email',$user_data['email'])->first();
 
-        if(!$user || Hash::check($user_data['password'],$user->password)) {
+        if(!$user || !Hash::check($user_data['password'],$user->password)) {
+            $response = [
+                'message'=>'Kredensial anda salah!'
+            ];
+            return response($response, 404);
+        } else {
             $token = $user->createToken('tokenku')->plainTextToken;
             $response = [
                 'user'=>$user,
                 'token'=>$token
             ];
-            return response($response, 201);
-        } else {
-            $response = [
-                'message'=>'Kredensial anda salah!'
-            ];
-            return response($response, 404);
+            return response($response, 201);   
         }
 
     }
